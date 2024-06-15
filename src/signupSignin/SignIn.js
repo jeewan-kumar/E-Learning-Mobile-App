@@ -1,22 +1,34 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Dimensions, TextInput, TouchableOpacity, Image } from 'react-native';
-import Home from '../homeScreen/Home';
+
+import React, { useContext, useState } from 'react';
+import { Image, StyleSheet, Text, View, Dimensions, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { AuthContext } from '../services/AuthContext';
 
 const windowWidth = Dimensions.get('window').width;
 
 const SignIn = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const { signIn, isLoading } = useContext(AuthContext);
 
-  const handleSignInPress = () => {
-    const correctEmail = "user@example.com";
-    const correctPassword = "password123";
+  const handleSignInPress = async () => {
+    // Basic email format validation
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(email)) {
+      Alert.alert('Error', 'Invalid email address');
+      return;
+    }
 
-    if (email === correctEmail && password === correctPassword) {
-      navigation.navigate('Home');
+    // Other validations and sign-in logic
+    if (email && password) {
+      const signInSuccess = await signIn(email, password);
+      console.log(signInSuccess ,'api response')
+      if (signInSuccess) {
+        navigation.navigate('Home');
+      } else {
+        Alert.alert('Error', 'Invalid email or password. Please try again.');
+      }
     } else {
-      setError("Invalid email or password. Please try again.");
+      Alert.alert('Error', 'All fields are required');
     }
   };
 
@@ -27,10 +39,9 @@ const SignIn = ({ navigation }) => {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder='Email address or Phone number'
+          placeholder='Email address'
           keyboardType='email-address'
           autoCapitalize='none'
-          autoCompleteType='email'
           value={email}
           onChangeText={setEmail}
         />
@@ -38,20 +49,20 @@ const SignIn = ({ navigation }) => {
           style={styles.input}
           placeholder='Password'
           secureTextEntry={true}
-          autoCompleteType='password'
           value={password}
           onChangeText={setPassword}
         />
       </View>
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      <TouchableOpacity style={styles.signInButton} onPress={handleSignInPress}>
-        <Text style={styles.signInButtonText}>Sign In</Text>
-      </TouchableOpacity>
-      <View style={styles.forgotPasswordContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+      {isLoading ? (
+        <ActivityIndicator size="large" color="blue" />
+      ) : (
+        <TouchableOpacity style={styles.signInButton} onPress={handleSignInPress}>
+          <Text style={styles.signInButtonText}>Sign In</Text>
         </TouchableOpacity>
-      </View>
+      )}
+      <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+      </TouchableOpacity>
       <Text>Or Continue With</Text>
       <View style={styles.socialLoginContainer}>
         <TouchableOpacity onPress={() => { }}>
@@ -100,10 +111,6 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderRadius: 5,
     paddingLeft: 10,
-    marginBottom: 10,
-  },
-  errorText: {
-    color: 'red',
     marginBottom: 10,
   },
   signInButton: {

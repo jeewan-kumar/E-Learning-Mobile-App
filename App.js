@@ -1,45 +1,26 @@
-// // App.js
 // import React, { useState, useRef } from 'react';
-// import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+// import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 // import AppIntroSlider from 'react-native-app-intro-slider';
 // import { NavigationContainer } from '@react-navigation/native';
 // import { createStackNavigator } from '@react-navigation/stack';
+// import Home from './src/homeScreen/Home';
+// import Onboarding from './src/onboarding/Onboarding';
+// // import CourseDetails from './src/components/CourseDetails';
 // import SignIn from './src/signupSignin/SignIn';
 // import SignUp from './src/signupSignin/SignUp';
 // import ForgotPassword from './src/signupSignin/ForgotPassword';
-// import Home from './src/homeScreen/Home';
+// import ProfileScreen from './src/homeScreen/ProfileScreen';
+// import EnrolledCoursesScreen from './src/homeScreen/EnrolledCoursesScreen';
+// import CourseDetails from './src/components/CourseDetails';
+// import LessonDetailsScreen from './src/homeScreen/LessonDetailsScreen';
+// import SearchScreen from './src/homeScreen/SearchScreen';
+// import CourseListScreen from './src/homeScreen/CourseListScreen'
+// import CourseDetailsScreen from './src/homeScreen/CourseListScreen';
+// import { AuthProvider } from './src/services/AuthContext';
+// import SplashScreen from './src/homeScreen/SplashScreen';
 
-// const slides = [
-//   {
-//     id: '1',
-//     image: require('./src/images/onbod_01.png'),
-//     title: 'Skillup Coding',
-//   },
-//   {
-//     id: '2',
-//     image: require('./src/images/onbod_02.png'),
-//     title: 'Skillup Coding Free Trial Courses',
-//     subtitle: 'Free courses for you to find your way to learning.',
-//   },
-//   {
-//     id: '3',
-//     image: require('./src/images/onbod_03.png'),
-//     title: 'Quick and easy learning',
-//     subtitle: 'Easy and fast learning at any time to help you improve various skills.',
-//   },
-//   {
-//     id: '4',
-//     image: require('./src/images/onbod_04.png'),
-//     title: 'Personalized for you',
-//     subtitle: 'Get recommendations based on your enrolled courses and searches.',
-//   },
-//   {
-//     id: '5',
-//     image: require('./src/images/onbod_05.png'),
-//     title: 'Get Online Certificate',
-//     subtitle: 'Analyse your scores and Track your results.',
-//   },
-// ];
+
+
 
 // const Stack = createStackNavigator();
 
@@ -62,118 +43,70 @@
 //   const renderContent = () => {
 //     if (!showHomePage) {
 //       return (
-//         <AppIntroSlider
-//           ref={sliderRef}
-//           data={slides}
-//           renderItem={renderSlideItem}
-//           activeDotStyle={styles.activeDot}
-//           showSkipButton
-//           renderNextButton={() => renderButton('Next', handleNext)}
-//           renderSkipButton={() => renderButton('Skip', handleSkip)}
-//           renderDoneButton={() => renderButton('Done', handleSkip)}
-//           onDone={() => setShowHomePage(true)}
+//         <Onboarding
+//           sliderRef={sliderRef}
+//           handleNext={handleNext}
+//           handleSkip={handleSkip}
+//           setShowHomePage={setShowHomePage}
+//           currentIndex={currentIndex}
+//           setCurrentIndex={setCurrentIndex}
 //         />
 //       );
 //     } else {
 //       return (
+//         <AuthProvider>
 //         <NavigationContainer>
 //           <Stack.Navigator initialRouteName="SignIn">
-//             {/* <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
+//           <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
+//             <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
 //             <Stack.Screen name="SignUp" component={SignUp} />
-//             <Stack.Screen name="ForgotPassword" component={ForgotPassword} /> */}
-//             <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+//             <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+//             <Stack.Screen name="Home" component={Home} />            
+//             <Stack.Screen name="Profile" component={ProfileScreen} />
+//             <Stack.Screen name="CourseDetails" component={CourseDetailsScreen} />
+//             <Stack.Screen name="Search" component={SearchScreen} />
+//             <Stack.Screen name="CourseList" component={CourseListScreen} />
+//             <Stack.Screen name="LessonDetails" component={LessonDetailsScreen} />
+//             <Stack.Screen name="EnrolledCourses" component={EnrolledCoursesScreen} />
 //           </Stack.Navigator>
 //         </NavigationContainer>
+//         </AuthProvider>
 //       );
 //     }
 //   };
 
-//   const renderSlideItem = ({ item }) => (
-//     <View style={styles.slide}>
-//       <Image source={item.image} style={styles.image} resizeMode="contain" />
-//       <Text style={styles.title}>{item.title}</Text>
-//       {item.subtitle && <Text style={styles.subtitle}>{item.subtitle}</Text>}
-//     </View>
-//   );
-
-//   const renderButton = (label, onPress) => (
-//     <TouchableOpacity style={styles.button} onPress={onPress}>
-//       <Text style={styles.buttonText}>{label}</Text>
-//     </TouchableOpacity>
-//   );
-
 //   return renderContent();
 // }
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#ffffff',
-//   },
-//   slide: {
-//     flex: 1,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     paddingHorizontal: 20,
-//   },
-//   image: {
-//     width: '90%',
-//     height: 300,
-//     borderRadius: 10,
-//     marginBottom: 20,
-//   },
-//   title: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     marginBottom: 10,
-//     textAlign: 'center',
-//   },
-//   subtitle: {
-//     fontSize: 16,
-//     textAlign: 'center',
-//   },
-//   activeDot: {
-//     backgroundColor: '#007AFF',
-//     width: 10,
-//     height: 10,
-//     borderRadius: 5,
-//   },
-//   button: {
-//     paddingHorizontal: 20,
-//     paddingVertical: 10,
-//     backgroundColor: '#007AFF',
-//     borderRadius: 20,
-//     marginBottom: 20,
-//   },
-//   buttonText: {
-//     color: '#ffffff',
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//   },
-// });
 
 
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import AppIntroSlider from 'react-native-app-intro-slider';
+// App.js
+
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from './src/homeScreen/Home';
-import Onboarding from './src/onboarding/Onboarding';
-import CourseDetails from './src/components/CourseDetails';
+import ProfileScreen from './src/homeScreen/ProfileScreen';
+import SearchScreen from './src/homeScreen/SearchScreen';
+import EnrolledCoursesScreen from './src/homeScreen/EnrolledCoursesScreen';
+import SplashScreen from './src/homeScreen/SplashScreen';
 import SignIn from './src/signupSignin/SignIn';
 import SignUp from './src/signupSignin/SignUp';
 import ForgotPassword from './src/signupSignin/ForgotPassword';
-
+import CourseDetailsScreen from './src/homeScreen/CourseDetailsScreen';
+import LessonDetailsScreen from './src/homeScreen/LessonDetailsScreen';
+import CourseListScreen from './src/homeScreen/CourseListScreen';
+import Onboarding from './src/onboarding/Onboarding';
+import { AuthProvider } from './src/services/AuthContext';
 
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
-  const [showHomePage, setShowHomePage] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const sliderRef = useRef(null);
+  const [showHomePage, setShowHomePage] = React.useState(false);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const sliderRef = React.useRef(null);
 
   const handleNext = () => {
     if (sliderRef.current) {
@@ -200,18 +133,38 @@ export default function App() {
       );
     } else {
       return (
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="SignIn">
-            {/* <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
-            <Stack.Screen name="SignUp" component={SignUp} />
-            <Stack.Screen name="ForgotPassword" component={ForgotPassword} /> */}
-            <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-            <Stack.Screen name="CourseDetails" component={CourseDetails}  options={{ headerShown: false }}/>
-          </Stack.Navigator>
-        </NavigationContainer>
+        <AuthProvider>
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="SignIn" screenOptions={{headerShown:false}}>
+              <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }} />
+              <Stack.Screen name="SignUp" component={SignUp} />
+              <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+              <Stack.Screen name="Home" component={MainTabNavigator}  />
+              <Stack.Screen name="Profile" component={ProfileScreen} />
+              <Stack.Screen name="CourseDetails" component={CourseDetailsScreen} />
+              <Stack.Screen name="Search" component={SearchScreen} />
+              <Stack.Screen name="CourseList" component={CourseListScreen} />
+              <Stack.Screen name="LessonDetails" component={LessonDetailsScreen} />
+              <Stack.Screen name="EnrolledCourses" component={EnrolledCoursesScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </AuthProvider>
       );
     }
   };
 
   return renderContent();
 }
+
+function MainTabNavigator() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={Home}  />      
+      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="EnrolledCourses" component={EnrolledCoursesScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
+  );
+}
+

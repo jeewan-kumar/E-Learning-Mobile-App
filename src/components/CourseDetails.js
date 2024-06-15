@@ -37,7 +37,7 @@
 // export default CourseDetails
 
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Button, ScrollView } from 'react-native';
 
 const CourseDetails = ({ route, navigation }) => {
     const { title, lessons, image } = route.params;
@@ -55,7 +55,7 @@ const CourseDetails = ({ route, navigation }) => {
         <View style={styles.container}>
             <Text>{title}</Text>
             <Text>{lessons}</Text>
-            <Image source={image} style={styles.image} />
+            {/* <Image source={image} style={styles.image} /> */}
             <TouchableOpacity style={styles.enrollButton} onPress={handleEnrollPress}>
                 <Text style={styles.enrollText}>Enroll in Course</Text>
             </TouchableOpacity>
