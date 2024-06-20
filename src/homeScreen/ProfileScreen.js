@@ -88,7 +88,7 @@ const ProfileScreen = ({ navigation }) => {
     Alert.alert('Logout', 'You have been logged out.', [
       {
         text: 'OK',
-        onPress: () => navigation.navigate('Login'),
+        onPress: () => navigation.navigate('SignIn'),
       },
     ]);
   };

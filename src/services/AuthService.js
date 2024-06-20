@@ -24,7 +24,7 @@ export const logout = async (userInfo, setUserInfo, setIsLoading, navigation) =>
     setIsLoading(false);
 
     // Navigate to the Login screen
-    navigation.navigate('Login');
+    navigation.navigate('SignIn');
   } catch (error) {
     console.error(`Logout failed: ${error}`);
     setIsLoading(false);

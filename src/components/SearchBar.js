@@ -1,33 +1,42 @@
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const SearchBar = () => {
   return (
-    <View style={styles.searchBar}>
-      <Icon name="search" size={24} color="#888" />
+    <View style={styles.container}>
+      <Icon name="search" size={24} style={styles.icon} />
       <TextInput
-        placeholder="Search your courses"
         style={styles.input}
+        placeholder='Search courses...'
+        placeholderTextColor='#888'
+        keyboardType='default'
+        autoCapitalize='none'
+        autoCorrect={false}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  searchBar: {
+  container: {
     flexDirection: 'row',
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 10,
+    elevation: 2,
+    margin: 10,
     alignItems: 'center',
-    backgroundColor: '#e0e0e0',
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    marginVertical: 10,
+  },
+  icon: {
     marginRight: 10,
+    color: '#888', // Adjust color of the icon
   },
   input: {
     flex: 1,
-    paddingLeft: 10,
-    color: '#333',
+    height: 40,
+    fontSize: 16,
+    color: '#333', // Adjust text color
   },
 });
 
