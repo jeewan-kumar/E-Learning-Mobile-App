@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const SearchBar = () => {
+const SearchBar = ({ query, onSearch }) => {
   return (
     <View style={styles.container}>
       <Icon name="search" size={24} style={styles.icon} />
@@ -13,6 +14,8 @@ const SearchBar = () => {
         keyboardType='default'
         autoCapitalize='none'
         autoCorrect={false}
+        value={query}
+        onChangeText={text => onSearch(text)}
       />
     </View>
   );

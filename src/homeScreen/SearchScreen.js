@@ -1,168 +1,235 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, FlatList, ActivityIndicator, Image, TouchableOpacity, Alert } from 'react-native';
-import axios from 'axios';
-import { ScrollView } from 'react-native-gesture-handler';
 
-const courseUrl = "http://192.168.33.157:5164/skillup_Course";
-
+import { StyleSheet, Text, View } from 'react-native'
+import SearchBar from '../components/SearchBar'
+import AllCourses from '../components/AllCourses'
+import { ScrollView } from 'react-native-gesture-handler'
+import FilterCours from '../components/FilterCours'
 const SearchScreen = () => {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    fetchCourses();
-  }, []);
-
-  const fetchCourses = async () => {
-    setLoading(true);
-    try {
-      const requestData = {
-        eventID: "1009",
-        addInfo: {
-          "keyword": "ai"
-        }
-      };
-      const response = await axios.post(courseUrl, requestData);
-      if (response.data.rData.rCode === 0) {
-        setCourses(response.data.rData.courses[0]); // Assuming courses are an array of objects
-      } else {
-        setError(response.data.rData.rMessage || 'Failed to fetch courses');
-      }
-    } catch (error) {
-      setError(error.message || 'Failed to fetch courses');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEnroll = (courseId) => {
-    Alert.alert('Enroll', `Enroll button clicked for course ID: ${courseId}`);
-    // Implement your enroll logic here, e.g., navigate to enrollment screen
-  };
-
-  const renderItem = ({ item }) => {
-    const imageUri = getImageUri(item[6]);
-    return (
-      <View style={styles.courseCard}>
-        <Image
-          source={{ uri: imageUri }}
-          style={styles.courseImage}
-          onError={() => console.log(`Failed to load image for course: ${item[1]}`)}
-        />
-        <View style={styles.courseDetails}>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.courseTitle}>{item[1]}</Text>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.courseDescription}>{item[2]}</Text>
-          <TouchableOpacity style={styles.enrollButton} onPress={() => handleEnroll(item[0])}>
-            <Text style={styles.enrollButtonText}>Enroll Now</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
-
-  const getImageUri = (base64String) => {
-    if (base64String.startsWith('/9j/')) {
-      return `data:image/jpeg;base64,${base64String}`;
-    } else if (base64String.startsWith('iVBORw0KGgo=')) {
-      return `data:image/png;base64,${base64String}`;
-    } else {
-      return `data:image/jpg;base64,${base64String}`; // Default to JPEG if unknown
-    }
-  };
-
   return (
-    <ScrollView>
-    <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#007AFF" style={styles.loader} />
-      ) : error ? (
-        <Text style={styles.errorText}>{error}</Text>
-      ) : (
-        <FlatList
-          data={courses}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => `${index}-${item[0]}`} // Using a combination of index and courseId as key
-          contentContainerStyle={styles.flatListContainer}
-          ListEmptyComponent={<Text style={styles.noResults}>No results found</Text>}
-        />
-      )}
-    </View>
-    </ScrollView>
-  );
-};
+    <FilterCours/>
+  )
+}
+export default SearchScreen
+const styles = StyleSheet.create({})
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingVertical: 10,
-  },
-  loader: {
-    marginTop: 20,
-  },
-  errorText: {
-    textAlign: 'center',
-    marginTop: 10,
-    fontSize: 16,
-    color: 'red',
-  },
-  flatListContainer: {
-    paddingHorizontal: 10,
-  },
-  courseCard: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    marginBottom: 10,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  courseImage: {
-    width: 120,
-    height: 90,
-    borderTopLeftRadius: 8,
-    borderBottomLeftRadius: 8,
-  },
-  courseDetails: {
-    flex: 1,
-    padding: 10,
-    justifyContent: 'space-between',
-  },
-  courseTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 2,
-  },
-  courseDescription: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 5,
-  },
-  enrollButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  enrollButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  noResults: {
-    textAlign: 'center',
-    marginTop: 20,
-    fontSize: 16,
-    color: '#666',
-  },
-});
 
-export default SearchScreen;
+// import React, { useEffect, useState } from 'react';
+// import { StyleSheet, Text, View, FlatList, ActivityIndicator, Image, TouchableOpacity, Alert } from 'react-native';
+// import axios from 'axios';
+// import { ScrollView, TextInput } from 'react-native-gesture-handler';
+// import Ionicons from 'react-native-vector-icons/Ionicons';
 
+// import { fonts } from '../utils/fonts';
+
+// const courseUrl = "http://192.168.33.157:5164/skillup_Course";
+
+// const SearchScreen = () => {
+//   const [courses, setCourses] = useState([]);
+//   const [filteredCourses, setFilteredCourses] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState('');
+//   const [query, setQuery] = useState('');
+
+//   useEffect(() => {
+//     fetchCourses();
+//   }, []);
+
+//   const fetchCourses = async () => {
+//     setLoading(true);
+//     try {
+//       const requestData = {
+//         eventID: "1005",
+//         addInfo: {
+//           "req": {}
+//         }
+//       };
+//       const response = await axios.post(courseUrl, requestData);
+//       if (response.data.rData.rCode === 0) {
+//         setCourses(response.data.rData.courses[0]);
+//         setFilteredCourses(response.data.rData.courses[0]); // Initialize filtered courses with all courses
+//       } else {
+//         setError(response.data.rData.rMessage || 'Failed to fetch courses');
+//       }
+//     } catch (error) {
+//       setError(error.message || 'Failed to fetch courses');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleEnroll = (courseId) => {
+//     Alert.alert('Enroll', `Enroll button clicked for course ID: ${courseId}`);
+//     // Implement your enroll logic here, e.g., navigate to enrollment screen
+//   };
+
+//   const renderItem = ({ item }) => {
+//     const imageUri = getImageUri(item[6]);
+//     return (
+//       <View style={styles.courseCard}>
+//         <Image
+//           source={{ uri: imageUri }}
+//           style={styles.courseImage}
+//           onError={() => console.log(`Failed to load image for course: ${item[1]}`)}
+//         />
+//         <View style={styles.courseDetails}>
+//           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.courseTitle}>{item[1]}</Text>
+//           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.courseDescription}>{item[2]}</Text>
+//           <TouchableOpacity style={styles.enrollButton} onPress={() => handleEnroll(item[0])}>
+//             <Text style={styles.enrollButtonText}>Enroll Now</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+//     );
+//   };
+
+//   const handleSearch = () => {
+//     if (query.trim() === '') {
+//       setFilteredCourses(courses); // Reset filteredCourses to show all courses
+//     } else {
+//       const filtered = courses.filter(course => course[1].toLowerCase().includes(query.toLowerCase()));
+//       setFilteredCourses(filtered);
+//     }
+//   };
+
+//   const getImageUri = (base64String) => {
+//     if (base64String.startsWith('/9j/')) {
+//       return `data:image/jpeg;base64,${base64String}`;
+//     } else if (base64String.startsWith('iVBORw0KGgo=')) {
+//       return `data:image/png;base64,${base64String}`;
+//     } else {
+//       return `data:image/jpg;base64,${base64String}`;
+//     }
+//   };
+
+//   return (
+//     <ScrollView>
+//       <View style={styles.container}>
+//         <View style={styles.inputContainer}>
+//           <Ionicons name="search-outline" size={30} />
+//           <TextInput
+//             style={styles.textInput}
+//             placeholder="Search for Courses"
+//             value={query}
+//             onChangeText={text => setQuery(text)}
+//             onSubmitEditing={handleSearch}
+//           />
+//         </View>
+
+//         {loading ? (
+//           <ActivityIndicator size="large" color="#007AFF" style={styles.loader} />
+//         ) : error ? (
+//           <Text style={styles.errorText}>{error}</Text>
+//         ) : (
+//           <FlatList
+//             data={filteredCourses}
+//             renderItem={renderItem}
+//             keyExtractor={(item, index) => `${index}-${item[0]}`}
+//             contentContainerStyle={styles.flatListContainer}
+//             ListEmptyComponent={<Text style={styles.noResults}>No results found</Text>}
+//           />
+//         )}
+//       </View>
+//     </ScrollView>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     paddingVertical: 10,
+//   },
+//   loader: {
+//     marginTop: 20,
+//   },
+//   errorText: {
+//     textAlign: 'center',
+//     marginTop: 10,
+//     fontSize: 16,
+//     color: 'red',
+//   },
+//   flatListContainer: {
+//     paddingHorizontal: 10,
+//   },
+//   courseCard: {
+//     flexDirection: 'row',
+//     backgroundColor: '#fff',
+//     borderRadius: 8,
+//     marginBottom: 10,
+//     elevation: 2,
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.25,
+//     shadowRadius: 3.84,
+//   },
+//   courseImage: {
+//     width: 120,
+//     height: 90,
+//     borderTopLeftRadius: 8,
+//     borderBottomLeftRadius: 8,
+//   },
+//   courseDetails: {
+//     flex: 1,
+//     padding: 10,
+//     justifyContent: 'space-between',
+//   },
+//   courseTitle: {
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//     marginBottom: 2,
+//   },
+//   courseDescription: {
+//     fontSize: 14,
+//     color: '#666',
+//     marginBottom: 5,
+//   },
+//   enrollButton: {
+//     backgroundColor: '#007AFF',
+//     paddingVertical: 5,
+//     paddingHorizontal: 10,
+//     borderRadius: 5,
+//     alignItems: 'center',
+//   },
+//   enrollButtonText: {
+//     color: '#fff',
+//     fontSize: 14,
+//     fontWeight: 'bold',
+//   },
+//   noResults: {
+//     textAlign: 'center',
+//     marginTop: 20,
+//     fontSize: 16,
+//     color: '#666',
+//   },
+//   searchInput: {
+//     width: 120,
+//     height: 90,
+//     borderTopLeftRadius: 8,
+//     borderBottomLeftRadius: 8,
+//     borderWidth: 1,
+//     borderColor: '#ccc',
+//     padding: 10,
+//     borderRadius: 5,
+//     marginBottom: 20,
+//   },
+//   inputContainer: {
+//     borderWidth: 1,
+//     borderColor: 'black',
+//     borderRadius: 100,
+//     paddingHorizontal: 20,
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     padding: 2,
+//     marginVertical: 10,
+//   },
+//   textInput: {
+//     flex: 1,
+//     paddingHorizontal: 10,
+//     fontFamily: fonts.Light,
+
+//   },
+// });
+
+// export default SearchScreen;
 
 
 // import React, { useState } from 'react';

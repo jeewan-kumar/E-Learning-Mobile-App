@@ -1,4 +1,69 @@
 
+
+import { StyleSheet, Text, View,TouchableOpacity,TextInput } from 'react-native'
+import PopularCourses from '../components/PopularCourses'
+import AllCourses from '../components/AllCourses'
+import { ScrollView } from 'react-native-gesture-handler'
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
+import Loader from '../components/Loader';
+import ErrorMessage from '../components/ErrorMessage';
+
+const Home = () => {
+  const navigation = useNavigation();
+
+  const handleSearchPress = () => {
+    navigation.navigate('Search'); // Navigate to SearchScreen
+  };
+  return (
+    <ScrollView showsHorizontalScrollIndicator={false}>
+
+      <View style={styles.container}>
+        <TouchableOpacity onPress={handleSearchPress}>
+          <Icon name="search" size={24} style={styles.icon} />
+        </TouchableOpacity>
+        <TextInput
+          style={styles.input}
+          placeholder='Search courses...'
+          placeholderTextColor='#888'
+          keyboardType='default'
+          autoCapitalize='none'
+          autoCorrect={false}
+          onFocus={handleSearchPress} // Navigate on text input focus
+        />
+      </View>
+      <View>
+
+        <PopularCourses />
+        <AllCourses />
+      </View>
+    </ScrollView>
+
+  )
+}
+export default Home
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 10,
+    elevation: 2,
+    margin: 10,
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 10,
+    color: '#888', // Adjust color of the icon
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    fontSize: 16,
+    color: '#333', // Adjust text color
+  },
+});
 // import React, { useEffect, useState } from 'react';
 // import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 // import { getCourses, getPopularCourses, getEnrolledCourses, searchCourses } from '../services/courses';
@@ -70,7 +135,7 @@
 //         onChangeText={setSearchQuery}
 //         onSubmitEditing={handleSearch}
 
-//       /> 
+//       />
 
 //       <FlatList
 //         data={searchResults}
@@ -298,25 +363,3 @@
 
 // export default Home;
 
-
-
-import { StyleSheet, Text, View } from 'react-native'
-import PopularCourses from '../components/PopularCourses'
-import SearchBar from '../components/SearchBar'
-import AllCourses from '../components/AllCourses'
-import { ScrollView } from 'react-native-gesture-handler'
-import SearchScreen from './SearchScreen'
-const Home = () => {
-  return (
-    <ScrollView showsHorizontalScrollIndicator={false}>
-      <View>
-        <SearchBar />
-        <PopularCourses />
-        <AllCourses />
-      </View>
-    </ScrollView>
-
-  )
-}
-export default Home
-const styles = StyleSheet.create({})

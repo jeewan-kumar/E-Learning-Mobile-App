@@ -62,6 +62,8 @@ export default function App() {
               <Stack.Screen name="Profile" component={ProfileScreen} />
               <Stack.Screen name="CourseDetails" component={CourseDetailsScreen} />
               <Stack.Screen name="Search" component={SearchScreen} />
+              {/* <Stack.Screen name="AllCourses" component={AllCourses} /> */}
+
               <Stack.Screen name="CourseList" component={CourseListScreen} />
               <Stack.Screen name="LessonDetails" component={LessonDetailsScreen} />
               <Stack.Screen name="EnrolledCourses" component={EnrolledCoursesScreen} />

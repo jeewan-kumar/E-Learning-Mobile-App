@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import axios from 'axios';
@@ -11,7 +12,7 @@ const apiUrl = 'http://192.168.33.157:5164/skillup_UserSignUp';
 const ForgotPassword = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+  const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showOtpInput, setShowOtpInput] = useState(false);
@@ -64,7 +65,7 @@ const ForgotPassword = ({ navigation }) => {
   };
 
   const handleResetPasswordFinal = async () => {
-    if (newPassword !== confirmPassword) {
+    if (password !== confirmPassword) {
       Alert.alert('Error', 'Passwords do not match');
       return;
     }
@@ -72,10 +73,10 @@ const ForgotPassword = ({ navigation }) => {
     try {
       setIsLoading(true);
       const storedEmail = await AsyncStorage.getItem('email');
-      const storedOtp = await AsyncStorage.getItem('otp');
+      const storedOtp = otp;
       const requestData = {
         eventID: '1003',
-        addInfo: { email: storedEmail, otp: storedOtp, newPassword },
+        addInfo: { email: storedEmail, otp: storedOtp, password },
       };
       const response = await axios.post(apiUrl, requestData);
       if (response.data.rData.rCode === 0) {
@@ -108,6 +109,7 @@ const ForgotPassword = ({ navigation }) => {
         <Ionicons name={"arrow-back-outline"} color={colors.primary} size={25} />
       </TouchableOpacity>
       <Text style={styles.title}>Forgot Password</Text>
+      <Text style={{color:'black', fontWeight:"bold"}}>Email : {email}</Text>
       {!showOtpInput && !showResetPassword && (
         <TextInput
           style={styles.input}
@@ -135,8 +137,8 @@ const ForgotPassword = ({ navigation }) => {
             style={styles.input}
             placeholder="New Password"
             secureTextEntry
-            value={newPassword}
-            onChangeText={setNewPassword}
+            value={password}
+            onChangeText={setPassword}
             placeholderTextColor={colors.secondary}
           />
           <TextInput
@@ -219,6 +221,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 18,
     fontFamily: fonts.SemiBold,
+    
   },
 });
 
