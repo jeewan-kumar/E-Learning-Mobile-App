@@ -17,6 +17,8 @@ import CourseListScreen from './src/homeScreen/CourseListScreen';
 import Onboarding from './src/onboarding/Onboarding';
 import { AuthProvider } from './src/services/AuthContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Profile from './src/components/Profile';
+import EnrolledCourses from './src/components/EnrolledCourses';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -59,14 +61,16 @@ export default function App() {
               <Stack.Screen name="SignUp" component={SignUp} />
               <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
               <Stack.Screen name="Home" component={MainTabNavigator}  />
-              <Stack.Screen name="Profile" component={ProfileScreen} />
-              <Stack.Screen name="CourseDetails" component={CourseDetailsScreen} />
+              <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+              {/* <Stack.Screen name="CourseDetails" component={CourseDetails} /> */}
               <Stack.Screen name="Search" component={SearchScreen} />
               {/* <Stack.Screen name="AllCourses" component={AllCourses} /> */}
-
+              {/* <Stack.Screen name="VideoPlayer" component={VideoPlayer} /> */}
+              <Stack.Screen name="Profile" component={Profile} />
               <Stack.Screen name="CourseList" component={CourseListScreen} />
               <Stack.Screen name="LessonDetails" component={LessonDetailsScreen} />
-              <Stack.Screen name="EnrolledCourses" component={EnrolledCoursesScreen} />
+              <Stack.Screen name="EnrolledCoursesScreen" component={EnrolledCoursesScreen} />
+              <Stack.Screen name="EnrolledCourses" component={EnrolledCourses} />
             </Stack.Navigator>
           </NavigationContainer>
         </AuthProvider>
@@ -95,7 +99,7 @@ function MainTabNavigator() {
           return<Ionicons name="laptop-outline" size={25}/>
         }
       }}/>
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{headerTitleAlign:"center",
+      <Tab.Screen name="ProfileScreen" component={ProfileScreen} options={{headerTitleAlign:"center",
         tabBarIcon:()=>{
           return<Ionicons name="person-outline" size={25}/>
         }

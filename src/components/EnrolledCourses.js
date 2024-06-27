@@ -1,23 +1,21 @@
-
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, Image, TouchableOpacity, Alert, FlatList } from 'react-native';
 import axios from 'axios';
-import SearchBar from './SearchBar';
-import ErrorMessage from './ErrorMessage';
-import Loader from './Loader';
 
 const courseUrl = "http://192.168.33.157:5164/skillup_Course";
 
-const FilterCours = () => {
+const EnrolledCourses = () => {
   const [courses, setCourses] = useState([]);
-  const [filteredCourses, setFilteredCourses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedId, setSelectedId] = useState(null);
-  const [query, setQuery] = useState('');
 
   useEffect(() => {
     fetchCourses();
+
+    const intervalId = setInterval(fetchCourses, 60000); // Fetch courses every 60 seconds
+
+    return () => clearInterval(intervalId); // Clean up the interval on component unmount
   }, []);
 
   const fetchCourses = async () => {
@@ -25,15 +23,14 @@ const FilterCours = () => {
     setError('');
     try {
       const requestData = {
-        eventID: "1005",
+        eventID: "1007",
         addInfo: {
-          "req": {}
+          "skillup_id": 1,
         }
       };
       const response = await axios.post(courseUrl, requestData);
       if (response.data.rData.rCode === 0) {
-        setCourses(response.data.rData.courses[0]);
-        setFilteredCourses(response.data.rData.courses[0]); // Initialize filtered courses with all courses
+        setCourses(response.data.rData.courses[0]); // Assuming courses are an array of objects
       } else {
         setError(response.data.rData.rMessage || 'Failed to fetch courses');
       }
@@ -59,43 +56,38 @@ const FilterCours = () => {
     }
   };
 
-  const handleSearch = (text) => {
-    setQuery(text);
-    if (text.trim() === '') {
-      setFilteredCourses(courses); // Reset to all courses if search query is empty
-    } else {
-      const filtered = courses.filter(course => course[1].toLowerCase().includes(text.toLowerCase()));
-      setFilteredCourses(filtered);
-    }
-  };
-
-  const Item = ({ item }) => (
-    <TouchableOpacity onPress={() => setSelectedId(item[0])} style={[styles.item, selectedId === item[0] && styles.selectedItem]}>
+  const Item = ({ item, onPress }) => (
+    <TouchableOpacity onPress={onPress} style={styles.item}>
       <Image source={{ uri: getImageUri(item[6]) }} style={styles.courseImage} onError={() => console.log(`Failed to load image for course: ${item[1]}`)} />
       <View style={styles.courseDetails}>
         <Text numberOfLines={1} style={styles.courseTitle}>{item[1]}</Text>
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.courseDescription}>{item[2]}</Text>
         <TouchableOpacity style={styles.enrollButton} onPress={() => handleEnroll(item[0])}>
-          <Text style={styles.enrollButtonText}>Enroll Now</Text>
+          <Text style={styles.enrollButtonText}>Start Now</Text>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
 
+  const renderItem = ({ item }) => (
+    <Item
+      item={item}
+      onPress={() => setSelectedId(item[0])}
+    />
+  );
+
   return (
     <View style={styles.container}>
-      <SearchBar query={query} onSearch={handleSearch} />
-
       {loading ? (
         <ActivityIndicator size="large" color="#007AFF" style={styles.loader} />
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
       ) : (
         <FlatList
-          data={filteredCourses}
-          renderItem={({ item }) => <Item item={item} />}
+          data={courses}
+          renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={styles.flatList}
+          extraData={selectedId}
         />
       )}
     </View>
@@ -105,8 +97,17 @@ const FilterCours = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingVertical: 10,
     backgroundColor: '#f5f5f5',
-    
+  },
+  header: {
+    paddingHorizontal: 16,
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
   },
   loader: {
     marginTop: 20,
@@ -116,9 +117,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: 'red',
-  },
-  flatList: {
-    paddingVertical: 10,
   },
   item: {
     flexDirection: 'row',
@@ -135,43 +133,39 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-  selectedItem: {
-    borderColor: '#007AFF',
-    borderWidth: 2,
-  },
   courseImage: {
-    width: 170,
+    width: 150,
     height: 90,
     borderRadius: 8,
   },
   courseDetails: {
+    paddingLeft: 10,
     flex: 1,
-    marginLeft: 10,
     justifyContent: 'space-between',
   },
   courseTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 2,
     color: '#333',
   },
   courseDescription: {
     fontSize: 14,
+    lineHeight: 18,
+    marginBottom: 5,
     color: '#555',
   },
   enrollButton: {
     backgroundColor: '#007AFF',
     paddingVertical: 5,
-    paddingHorizontal: 10,
     borderRadius: 5,
     alignItems: 'center',
   },
   enrollButtonText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });
 
-export default FilterCours;
-
+export default EnrolledCourses;

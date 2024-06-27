@@ -4,7 +4,10 @@ import SearchBar from '../components/SearchBar'
 import AllCourses from '../components/AllCourses'
 import { ScrollView } from 'react-native-gesture-handler'
 import FilterCours from '../components/FilterCours'
+import { useNavigation } from '@react-navigation/native'
 const SearchScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <FilterCours/>
   )
