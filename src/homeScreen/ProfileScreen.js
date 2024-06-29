@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Image } fr
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../services/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
   const { logout } = useContext(AuthContext);
@@ -17,6 +18,11 @@ const ProfileScreen = () => {
   }, []);
 
   const fetchData = async () => {
+  //  const userInfo = await AsyncStorage.getItem('userInfo', JSON.stringify(userInfo));
+  //  console.log(userInfo ,'userInfo1111')
+
+    const userInfoString = await AsyncStorage.getItem('userInfo');
+    const userInfo = JSON.parse(userInfoString);
     try {
       const response = await fetch('http://192.168.33.157:5164/skillup_UserProfile', {
         method: 'POST',
@@ -26,7 +32,7 @@ const ProfileScreen = () => {
         body: JSON.stringify({
           eventID: "1006",
           addInfo: {
-            skillup_id: 1
+            skillup_id: userInfo.rData.id
           }
         }),
       });

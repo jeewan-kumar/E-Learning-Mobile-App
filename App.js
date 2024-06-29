@@ -153,6 +153,7 @@ import LearningPlanPage from './src/components/LearningPlanPage';
 import CertificatesPage from './src/components/CertificatesPage';
 import CourseDetails from './src/components/CourseDetails';
 import CourseList from './src/components/CourseList';
+import ProfileUpdateForm from './src/components/ProfileUpdateForm';
 
 
 const Stack = createStackNavigator();
@@ -241,6 +242,8 @@ export default function App() {
               <Stack.Screen name="About" component={AboutSkillUpCodingPage} />
               <Stack.Screen name="LearningPlan" component={LearningPlanPage} />
               <Stack.Screen name="MyCertificates" component={CertificatesPage} />
+              <Stack.Screen name="ProfileUpdateForm" component={ProfileUpdateForm} />
+
 
             </Stack.Navigator>
           </NavigationContainer>

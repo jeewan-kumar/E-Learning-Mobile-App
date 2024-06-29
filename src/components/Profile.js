@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, Image, StyleSheet, Button, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import BackButton from './BackButton';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { AuthContext } from '../services/AuthContext';
 
@@ -15,6 +16,8 @@ const Profile = ({ navigation }) => {
   }, []);
 
   const fetchUserProfile = async () => {
+    const userInfoString = await AsyncStorage.getItem('userInfo');
+    const userInfo = JSON.parse(userInfoString);
     try {
       const response = await fetch('http://192.168.33.157:5164/skillup_UserProfile', {
         method: 'POST',
@@ -24,7 +27,7 @@ const Profile = ({ navigation }) => {
         body: JSON.stringify({
           eventID: "1006",
           addInfo: {
-            skillup_id: 1,
+            skillup_id: userInfo.rData.id
           },
         }),
       });

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, Image, TouchableOpacity, Alert, FlatList } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../services/AuthContext';
 
 const courseUrl = "http://192.168.33.157:5164/skillup_Course";
 
@@ -19,13 +21,15 @@ const EnrolledCourses = () => {
   }, []);
 
   const fetchCourses = async () => {
+    const userInfoString = await AsyncStorage.getItem('userInfo');
+    const userInfo = JSON.parse(userInfoString);
     setLoading(true);
     setError('');
     try {
       const requestData = {
         eventID: "1007",
         addInfo: {
-          "skillup_id": 1,
+          "skillup_id": userInfo.rData.id
         }
       };
       const response = await axios.post(courseUrl, requestData);

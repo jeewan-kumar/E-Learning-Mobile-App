@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, Image, TouchableOpacity, Alert, FlatList } from 'react-native';
 import axios from 'axios';
@@ -6,8 +5,10 @@ import SearchBar from './SearchBar';
 import ErrorMessage from './ErrorMessage';
 import Loader from './Loader';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const courseUrl = "http://192.168.33.157:5164/skillup_Course";
+const enrollUrl = "http://192.168.33.157:5164/skillup_Course";
 
 const FilterCours = () => {
   const navigation = useNavigation();
@@ -17,6 +18,7 @@ const FilterCours = () => {
   const [error, setError] = useState('');
   const [selectedId, setSelectedId] = useState(null);
   const [query, setQuery] = useState('');
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
 
   useEffect(() => {
     fetchCourses();
@@ -46,9 +48,38 @@ const FilterCours = () => {
     }
   };
 
-  const handleEnroll = (courseId) => {
-    Alert.alert('Enroll', `Enroll button clicked for course ID: ${courseId}`);
-    // Implement your enroll logic here, e.g., navigate to enrollment screen
+  const enrollCourse = async (courseId) => {
+    const userInfoString = await AsyncStorage.getItem('userInfo');
+    const userInfo = JSON.parse(userInfoString);
+    try {
+      const response = await axios.post(enrollUrl, {
+        eventID: '1008',
+        addInfo: {
+          skillup_id: userInfo.rData.id,
+          course_id: courseId,
+        },
+      });
+
+      if (response.data.rData.rCode === 0) {
+        // Update enrolledCourses state with the enrolled course id
+        setEnrolledCourses([...enrolledCourses, courseId]);
+        Alert.alert('Success', 'Course enrolled successfully.');
+      } else {
+        throw new Error(response.data.rData.rMessage || 'Failed to enroll in course.');
+      }
+    } catch (error) {
+      console.error('Error enrolling in course:', error);
+      Alert.alert('Error', error.message || 'Failed to enroll in course. Please try again later.');
+    }
+  };
+
+  const handleEnroll = async (courseId) => {
+    // Check if already enrolled
+    if (enrolledCourses.includes(courseId)) {
+      navigation.navigate('CourseDetails', { courseId });
+    } else {
+      enrollCourse(courseId);
+    }
   };
 
   const getImageUri = (base64String) => {
@@ -77,9 +108,15 @@ const FilterCours = () => {
       <View style={styles.courseDetails}>
         <Text numberOfLines={1} style={styles.courseTitle}>{item[1]}</Text>
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.courseDescription}>{item[2]}</Text>
-        <TouchableOpacity style={styles.enrollButton} onPress={() => handleEnroll(item[0])}>
-          <Text style={styles.enrollButtonText}>Enroll Now</Text>
-        </TouchableOpacity>
+        {enrolledCourses.includes(item[0]) ? (
+          <TouchableOpacity style={styles.startButton} onPress={() => handleEnroll(item[0])}>
+            <Text style={styles.startButtonText}>Start Now</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.enrollButton} onPress={() => handleEnroll(item[0])}>
+            <Text style={styles.enrollButtonText}>Enroll Now</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -108,7 +145,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    
   },
   loader: {
     marginTop: 20,
@@ -173,7 +209,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
+  startButton: {
+    backgroundColor: 'green',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  startButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
 });
 
 export default FilterCours;
-
