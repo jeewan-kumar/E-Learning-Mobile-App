@@ -7,7 +7,7 @@ export default function CourseContent({ course, userProgress, courseType }) {
   const navigation = useNavigation();
 
   useEffect(() => {
-    console.log("userProgress", userProgress);
+    // console.log("userProgress", userProgress);
   }, []);
 
   const checkUserProgress = (contentId) => {

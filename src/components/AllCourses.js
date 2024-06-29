@@ -1,19 +1,25 @@
-
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, Image, TouchableOpacity, Alert, FlatList } from 'react-native';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 
 const courseUrl = "http://192.168.33.157:5164/skillup_Course";
+
+
+
+
 
 const AllCourses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedId, setSelectedId] = useState(null);
+  
+  const navigation = useNavigation(); // Get navigation object using useNavigation hook
 
   useEffect(() => {
     fetchCourses(); // Initial fetch when component mounts
-    const interval = setInterval(fetchCourses, 90000); // Fetch courses every 60 seconds
+    const interval = setInterval(fetchCourses, 60000); // Fetch courses every 60 seconds
 
     return () => clearInterval(interval); // Clean up interval on component unmount
   }, []);
@@ -46,6 +52,11 @@ const AllCourses = () => {
     // Implement your enroll logic here, e.g., navigate to enrollment screen
   };
 
+  const handleCourseList = () => {
+    // Alert.alert('Course Details', `Course Details button clicked for course ID: ${courseId}`);
+    navigation.navigate('CourseDetails'); // Navigate to 'CourseDetails' screen using navigation object
+  };
+
   const getImageUri = (base64String) => {
     if (base64String.startsWith('/9j/')) {
       return `data:image/jpeg;base64,${base64String}`;
@@ -56,8 +67,8 @@ const AllCourses = () => {
     }
   };
 
-  const Item = ({ item, onPress }) => (
-    <TouchableOpacity onPress={onPress} style={styles.item}>
+  const Item = ({ item }) => (
+    <TouchableOpacity onPress={handleCourseList} style={styles.item}>
       <Image source={{ uri: getImageUri(item[6]) }} style={styles.courseImage} onError={() => console.log(`Failed to load image for course: ${item[1]}`)} />
       <View style={styles.courseDetails}>
         <Text numberOfLines={1} style={styles.courseTitle}>{item[1]}</Text>
@@ -172,6 +183,7 @@ const styles = StyleSheet.create({
 });
 
 export default AllCourses;
+
 
 // import React, { useEffect, useState } from 'react';
 // import { StyleSheet, Text, View, ActivityIndicator, Image, TouchableOpacity, Alert, FlatList } from 'react-native';

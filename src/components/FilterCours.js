@@ -5,10 +5,12 @@ import axios from 'axios';
 import SearchBar from './SearchBar';
 import ErrorMessage from './ErrorMessage';
 import Loader from './Loader';
+import { useNavigation } from '@react-navigation/native';
 
 const courseUrl = "http://192.168.33.157:5164/skillup_Course";
 
 const FilterCours = () => {
+  const navigation = useNavigation();
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -70,7 +72,7 @@ const FilterCours = () => {
   };
 
   const Item = ({ item }) => (
-    <TouchableOpacity onPress={() => setSelectedId(item[0])} style={[styles.item, selectedId === item[0] && styles.selectedItem]}>
+    <TouchableOpacity onPress={() => setSelectedId(navigation.navigate('CourseDetails'))} style={[styles.item, selectedId === item[0] && styles.selectedItem]}>
       <Image source={{ uri: getImageUri(item[6]) }} style={styles.courseImage} onError={() => console.log(`Failed to load image for course: ${item[1]}`)} />
       <View style={styles.courseDetails}>
         <Text numberOfLines={1} style={styles.courseTitle}>{item[1]}</Text>

@@ -1,11 +1,134 @@
+// import React, { useState, useEffect } from 'react';
+// import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+// import Icon from 'react-native-vector-icons/FontAwesome';
+
+// const CourseDetails = ({ navigation }) => {
+//   const [courseDetails, setCourseDetails] = useState(null);
+
+//   useEffect(() => {
+//     const fetchCourseDetails = async () => {
+//       try {
+//         const response = await fetch('http://192.168.33.157:5164/skillup_Course', {
+//           method: 'POST',
+//           headers: {
+//             'Content-Type': 'application/json'
+//           },
+//           body: JSON.stringify({
+//             eventID: "10012",
+//             addInfo: {
+//               course_id: 1
+//             }
+//           })
+//         });
+//         const data = await response.json();
+//         setCourseDetails(data);
+//       } catch (error) {
+//         console.error('Error fetching course details:', error);
+//       }
+//     };
+
+//     fetchCourseDetails();
+//   }, []);
+
+//   if (!courseDetails) {
+//     return (
+//       <View style={styles.loadingContainer}>
+//         <Text>Loading...</Text>
+//       </View>
+//     );
+//   }
+
+//   return (
+//     <ScrollView style={styles.container}>
+//       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>      
+//         <Text> <Icon name="arrow-left" size={24} style={styles.icon} /> Course Details </Text>
+//       </TouchableOpacity>
+//       <Image source={{ uri: courseDetails.imageURL }} style={styles.image} />
+//       <Text style={styles.title}>{courseDetails.title}</Text>
+//       {/* <Text style={styles.subtitle}>{courseDetails.duration}hrs   {courseDetails.lessons} Lessons</Text> */}
+//       <Text style={styles.sectionTitle}>Description</Text>
+//       <Text style={styles.description}>{courseDetails.description}</Text>
+//       <Text style={styles.sectionTitle}>Course Syllabus</Text>
+//       {courseDetails.syllabus.map((item, index) => (
+//         <View key={index} style={styles.syllabusItem}>
+//           <Text>{item}</Text>
+//         </View>
+//       ))}
+//       <TouchableOpacity style={styles.enrollButton}>
+//         <Text style={styles.enrollButtonText}>Enroll Now</Text>
+//       </TouchableOpacity>
+//     </ScrollView>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 16,
+//     backgroundColor: '#fff',
+//   },
+//   backButton: {
+//     marginBottom: 16,
+//   },
+//   image: {
+//     width: '100%',
+//     height: 200,
+//     marginBottom: 16,
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: 'bold',
+//     marginBottom: 8,
+//   },
+//   subtitle: {
+//     fontSize: 16,
+//     color: 'gray',
+//     marginBottom: 16,
+//   },
+//   sectionTitle: {
+//     fontSize: 20,
+//     fontWeight: 'bold',
+//     marginVertical: 8,
+//   },
+//   description: {
+//     fontSize: 16,
+//     color: 'gray',
+//     marginBottom: 16,
+//   },
+//   syllabusItem: {
+//     padding: 16,
+//     backgroundColor: '#f0f0f0',
+//     marginVertical: 4,
+//   },
+//   enrollButton: {
+//     padding: 16,
+//     backgroundColor: 'green',
+//     alignItems: 'center',
+//     marginVertical: 16,
+//   },
+//   enrollButtonText: {
+//     color: '#fff',
+//     fontSize: 16,
+//   },
+//   loadingContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+// });
+
+// export default CourseDetails;
+
+
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const CourseDetails = ({ navigation }) => {
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Text>←</Text>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>      
+      <Text> <Icon name="arrow-left" size={24} style={styles.icon} /> Course Details </Text>
       </TouchableOpacity>
       <Image source={{ uri: 'https://via.placeholder.com/300' }} style={styles.image} />
       <Text style={styles.title}>Principle of Java Language</Text>
