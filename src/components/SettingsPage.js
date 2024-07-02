@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Switch, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
+import BackButton from './BackButton';
 
 const SettingsPage = ({ navigation }) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -8,6 +9,7 @@ const SettingsPage = ({ navigation }) => {
 
   // Function to handle toggling notifications
   const toggleNotifications = async () => {
+    
     try {
       const updatedState = !notificationsEnabled;
       setNotificationsEnabled(updatedState); // Optimistically update UI
@@ -72,6 +74,10 @@ const SettingsPage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <BackButton navigation={navigation} />
+        <Text style={styles.title}>Settings</Text>
+      </View>
       <Text style={styles.sectionTitle}>Notifications</Text>
       <View style={styles.settingItem}>
         <Text style={styles.settingText}>Enable Notifications</Text>
@@ -113,6 +119,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginVertical: 10,
+  },header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   settingItem: {
     flexDirection: 'row',
@@ -121,6 +131,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    textAlign: 'center',
+    flex: 1,
   },
   settingText: {
     fontSize: 16,

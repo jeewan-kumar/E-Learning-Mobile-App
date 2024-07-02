@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, ActivityIndicator, Image, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const courseUrl = "http://192.168.33.157:5164/skillup_Course";
+const enrollUrl = "http://192.168.33.157:5164/skillup_Course";
 
 const PopularCourses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [selectedId, setSelectedId] = useState(null);
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const navigation = useNavigation(); 
 
   useEffect(() => {
     fetchCourses(); // Initial fetch when component mounts
@@ -38,10 +44,36 @@ const PopularCourses = () => {
       setLoading(false);
     }
   };
+  const enrollCourse = async (courseId) => {
+    const userInfoString = await AsyncStorage.getItem('userInfo');
+    const userInfo = JSON.parse(userInfoString);
+    try {
+      const response = await axios.post(enrollUrl, {
+        eventID: '1008',
+        addInfo: {
+          skillup_id: userInfo.rData.id,
+          course_id: courseId,
+        },
+      });
 
+      if (response.data.rData.rCode === 0) {
+        // Update enrolledCourses state with the enrolled course id
+        setEnrolledCourses([...enrolledCourses, courseId]);
+        Alert.alert('Success', 'Course enrolled successfully.');
+      } else {
+        throw new Error(response.data.rData.rMessage || 'Failed to enroll in course.');
+      }
+    } catch (error) {
+      console.error('Error enrolling in course:', error);
+      Alert.alert('Error', error.message || 'Failed to enroll in course. Please try again later.');
+    }
+  };
   const handleEnroll = (courseId) => {
-    Alert.alert('Enroll', `Enroll button clicked for course ID: ${courseId}`);
+    enrollCourse(courseId);
     // Implement your enroll logic here, e.g., navigate to enrollment screen
+  };
+  const handleCourseDetails = (courseId) => {
+    navigation.navigate('CourseDetails', { courseId });
   };
 
   const getImageUri = (base64String) => {
@@ -71,6 +103,7 @@ const PopularCourses = () => {
             // console.log(`Image URI for course ${course[1]}: `, imageUri); // Logging image URI
             // console.log(`Base64 String for course ${course[1]}: `, course[6]); // Logging base64 string
             return (
+              <TouchableOpacity onPress={() => handleCourseDetails(course[0])} style={styles.item}>
               <View key={index} style={styles.courseCard}>
                 <Image
                   source={{ uri: imageUri }}
@@ -85,6 +118,8 @@ const PopularCourses = () => {
                   </TouchableOpacity>
                 </View>
               </View>
+              </TouchableOpacity>
+              
             );
           })}
         </ScrollView>

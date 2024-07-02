@@ -157,6 +157,7 @@ import ProfileUpdateForm from './src/components/ProfileUpdateForm';
 import AllCourses from './src/components/AllCourses';
 import VideoPlayer from './src/components/VideoPlayer';
 
+import WebViewScreen from './src/components/WebViewScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -245,6 +246,7 @@ export default function App() {
               <Stack.Screen name="LearningPlan" component={LearningPlanPage} />
               <Stack.Screen name="MyCertificates" component={CertificatesPage} />
               <Stack.Screen name="ProfileUpdateForm" component={ProfileUpdateForm} />
+              <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
 
 
             </Stack.Navigator>

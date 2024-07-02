@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 import { AuthContext } from '../services/AuthContext';
 
 const courseUrl = "http://192.168.33.157:5164/skillup_Course";

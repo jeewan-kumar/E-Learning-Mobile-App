@@ -140,7 +140,7 @@ const ProfileScreen = () => {
         <Text style={styles.buttonText}>My Courses</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('LearningPlan')}>
+      {/* <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('LearningPlan')}>
         <Ionicons name="reader-outline" size={25} style={styles.icon} />
         <Text style={styles.buttonText}>Learning Plan</Text>
       </TouchableOpacity>
@@ -148,7 +148,7 @@ const ProfileScreen = () => {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MyCertificates')}>
         <Ionicons name="ribbon-outline" size={25} style={styles.icon} />
         <Text style={styles.buttonText}>My Certificates</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('About')}>
         <Ionicons name="person-outline" size={25} style={styles.icon} />
@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: '#007AFF',
+    marginLeft: 10,
   },
   logoutButton: {
     flexDirection: 'row',

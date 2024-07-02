@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import BackButton from './BackButton';
 
-const ReportProblemPage = () => {
+const ReportProblemPage = ({ navigation }) => {
   const [problemDescription, setProblemDescription] = useState('');
 
   const handleSubmit = () => {
@@ -19,7 +20,10 @@ const ReportProblemPage = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Report a Problem</Text>
+      <View style={styles.header}>
+        <BackButton navigation={navigation} />
+        <Text style={styles.title}>Report a Problem</Text>
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Describe the problem..."
@@ -41,11 +45,17 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#f5f5f5',
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginLeft: 10,
     textAlign: 'center',
+    flex: 1,
   },
   input: {
     borderWidth: 1,

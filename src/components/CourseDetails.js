@@ -38,10 +38,10 @@ const CourseDetails = ({ navigation, route }) => {
     }
   };
 
-  const handleSyllabusItemClick = (lesson_Id) => {
+  const handleSyllabusItemClick = (lessonId) => {
     // You can navigate to a detailed view or perform an action based on the lessonId
-    console.log(`Clicked on syllabus item with lessonId: ${lesson_Id}`);
-    navigation.navigate('VideoPlayer', { lesson_Id });
+    console.log(`Clicked on syllabus item with lessonId: ${lessonId}`);
+    navigation.navigate('VideoPlayer', { lessonId });
   };
 
   if (loading) {

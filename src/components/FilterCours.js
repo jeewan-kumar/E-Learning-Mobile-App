@@ -101,9 +101,13 @@ const FilterCours = () => {
       setFilteredCourses(filtered);
     }
   };
+  const handleCourseDetails = (courseId) => {
+    navigation.navigate('CourseDetails', { courseId });
+  };
 
   const Item = ({ item }) => (
-    <TouchableOpacity onPress={() => setSelectedId(navigation.navigate('CourseDetails',{ courseId }))} style={[styles.item, selectedId === item[0] && styles.selectedItem]}>
+    // onPress={() => handleCourseDetails(item[0])}
+    <TouchableOpacity onPress={() => handleCourseDetails(item[0])} style={[styles.item, selectedId === item[0] && styles.selectedItem]}>
       <Image source={{ uri: getImageUri(item[6]) }} style={styles.courseImage} onError={() => console.log(`Failed to load image for course: ${item[1]}`)} />
       <View style={styles.courseDetails}>
         <Text numberOfLines={1} style={styles.courseTitle}>{item[1]}</Text>

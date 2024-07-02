@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ActivityIndicator, Image, TouchableOpacity, Ale
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../services/AuthContext';
+import { useNavigation } from '@react-navigation/native';
 
 const courseUrl = "http://192.168.33.157:5164/skillup_Course";
 
@@ -11,6 +12,7 @@ const EnrolledCourses = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedId, setSelectedId] = useState(null);
+  const navigation = useNavigation(); 
 
   useEffect(() => {
     fetchCourses();
@@ -49,6 +51,9 @@ const EnrolledCourses = () => {
     Alert.alert('Enroll', `Enroll button clicked for course ID: ${courseId}`);
     // Implement your enroll logic here, e.g., navigate to enrollment screen
   };
+  const handleCourseDetails = (courseId) => {
+    navigation.navigate('CourseDetails', { courseId });
+  };
 
   const getImageUri = (base64String) => {
     if (base64String.startsWith('/9j/')) {
@@ -61,12 +66,12 @@ const EnrolledCourses = () => {
   };
 
   const Item = ({ item, onPress }) => (
-    <TouchableOpacity onPress={onPress} style={styles.item}>
+    <TouchableOpacity onPress={() => handleCourseDetails(item[0])} style={styles.item}>
       <Image source={{ uri: getImageUri(item[6]) }} style={styles.courseImage} onError={() => console.log(`Failed to load image for course: ${item[1]}`)} />
       <View style={styles.courseDetails}>
         <Text numberOfLines={1} style={styles.courseTitle}>{item[1]}</Text>
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.courseDescription}>{item[2]}</Text>
-        <TouchableOpacity style={styles.enrollButton} onPress={() => handleEnroll(item[0])}>
+        <TouchableOpacity style={styles.enrollButton} onPress={() => handleCourseDetails(item[0])}>
           <Text style={styles.enrollButtonText}>Start Now</Text>
         </TouchableOpacity>
       </View>
