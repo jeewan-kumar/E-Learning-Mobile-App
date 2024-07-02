@@ -79,13 +79,13 @@ const ProfileScreen = () => {
     );
   }
 
-  if (!userData) {
-    return (
-      <View style={styles.container}>
-        <Text>No data available</Text>
-      </View>
-    );
-  }
+  // if (!userData) {
+  //   return (
+  //     <View style={styles.container}>
+  //       <Text>No data available</Text>
+  //     </View>
+  //   );
+  // }
 
   const handleLogout = () => {
     Alert.alert(
@@ -113,7 +113,7 @@ const ProfileScreen = () => {
   };
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.profileInfo}>
+      {/* <View style={styles.profileInfo}>
         {userData.profile_picture && (
           <Image
             source={{ uri: `data:image/jpeg;base64,${userData.profile_picture}` }}
@@ -122,7 +122,7 @@ const ProfileScreen = () => {
         )}
         <Text style={styles.name}>{userData.name}</Text>
         <Text style={styles.email}>{userData.email}</Text>
-      </View>
+      </View> */}
 
       {/* Navigation Buttons */}
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Profile')}>

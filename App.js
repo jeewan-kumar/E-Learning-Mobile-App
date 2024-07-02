@@ -154,6 +154,8 @@ import CertificatesPage from './src/components/CertificatesPage';
 import CourseDetails from './src/components/CourseDetails';
 import CourseList from './src/components/CourseList';
 import ProfileUpdateForm from './src/components/ProfileUpdateForm';
+import AllCourses from './src/components/AllCourses';
+import VideoPlayer from './src/components/VideoPlayer';
 
 
 const Stack = createStackNavigator();
@@ -229,8 +231,8 @@ export default function App() {
               <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
               <Stack.Screen name="CourseDetails" component={CourseDetails} />
               <Stack.Screen name="Search" component={SearchScreen} />
-              {/* <Stack.Screen name="AllCourses" component={AllCourses} /> */}
-              {/* <Stack.Screen name="VideoPlayer" component={VideoPlayer} /> */}
+              <Stack.Screen name="AllCourses" component={AllCourses} />
+              <Stack.Screen name="VideoPlayer" component={VideoPlayer} />
               <Stack.Screen name="Profile" component={Profile} />
               <Stack.Screen name="CourseList" component={CourseList} />
               <Stack.Screen name="LessonDetails" component={LessonDetailsScreen} />

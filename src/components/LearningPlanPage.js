@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const learningPlanUrl = "http://192.168.33.157:5164/skillup_LearningPlan";
 
@@ -18,14 +19,15 @@ const LearningPlanPage = () => {
     setError('');
     try {
       const requestData = {
-        eventID: "1009", // Adjust eventID as per your API requirement
+        eventID: "1002",
         addInfo: {
-          "skillup_id": 1, // Adjust skillup_id as per your API requirement
+          skillup_id: 1,
+          course_id: 1
         }
       };
       const response = await axios.post(learningPlanUrl, requestData);
       if (response.data.rData.rCode === 0) {
-        setLearningPlan(response.data.rData.learningPlan || []); // Assuming learningPlan is an array of objects
+        setLearningPlan(response.data.rData.learningPlan || []);
       } else {
         setError(response.data.rData.rMessage || 'Failed to fetch learning plan');
       }
@@ -43,7 +45,7 @@ const LearningPlanPage = () => {
     </TouchableOpacity>
   );
 
-  return (
+  return ( <ScrollView>
     <View style={styles.container}>
       {loading ? (
         <ActivityIndicator size="large" color="#007AFF" style={styles.loader} />
@@ -57,6 +59,7 @@ const LearningPlanPage = () => {
         />
       )}
     </View>
+    </ScrollView>
   );
 };
 
