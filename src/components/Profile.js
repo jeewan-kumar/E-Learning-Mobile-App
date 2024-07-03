@@ -1,15 +1,15 @@
 // import React, { useState, useEffect, useContext } from 'react';
 // import { View, Text, Image, StyleSheet, Button, Alert, ActivityIndicator, TextInput, ScrollView } from 'react-native';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
-// import ImagePicker from 'react-native-image-picker';
-
+// import { launchImageLibrary } from 'react-native-image-picker';
 // import { AuthContext } from '../services/AuthContext';
 
 // const Profile = ({ navigation }) => {
-//   const [userData, setUserData] = useState(null);
+//   const [userData, setUserData] = useState({});
 //   const [loading, setLoading] = useState(true);
 //   const [isEditing, setIsEditing] = useState(false);
-//   const [newProfilePicture, setNewProfilePicture] = useState(null); // State for new profile picture
+//   const [newProfilePicture, setNewProfilePicture] = useState(null);
+//   const [base64Image, setBase64Image] = useState('');
 
 //   const { logout } = useContext(AuthContext);
 
@@ -20,7 +20,7 @@
 //   const fetchUserProfile = async () => {
 //     const userInfoString = await AsyncStorage.getItem('userInfo');
 //     const userInfo = JSON.parse(userInfoString);
-    
+
 //     try {
 //       const response = await fetch('http://192.168.33.157:5164/skillup_UserProfile', {
 //         method: 'POST',
@@ -35,6 +35,10 @@
 //         }),
 //       });
       
+//       if (!response.ok) {
+//         throw new Error(`HTTP error! Status: ${response.status}`);
+//       }
+
 //       const jsonResponse = await response.json();
 
 //       if (jsonResponse.rStatus === 0 && jsonResponse.rData && jsonResponse.rData.profile) {
@@ -55,13 +59,17 @@
 //           };
 
 //           setUserData(user);
+//           setLoading(false);
+//           // Decode base64 image to displayable format
+//           setBase64Image(userArray[0]); // Assuming userArray[0] contains the base64 image
 //         } else {
 //           console.error('No user data found in profile array');
+//           setLoading(false);
 //         }
 //       } else {
 //         console.error('Invalid response structure or rStatus is not 0');
+//         setLoading(false);
 //       }
-//       setLoading(false);
 //     } catch (error) {
 //       console.error('Error fetching user profile:', error);
 //       setLoading(false);
@@ -97,59 +105,58 @@
 //     setIsEditing(true);
 //   };
 
-//   const handleChooseImage = () => {
-//     const options = {
-//       title: 'Select Profile Picture',
-//       storageOptions: {
-//         skipBackup: true,
-//         path: 'images',
-//       },
-//     };
-
-//     ImagePicker.showImagePicker(options, (response) => {
-//       if (response.didCancel) {
-//         console.log('User cancelled image picker');
-//       } else if (response.error) {
-//         console.error('ImagePicker Error:', response.error);
-//       } else {
-//         const source = { uri: response.uri };
-//         setNewProfilePicture(source);
+//   const handleChooseImage = async () => {
+//     try {
+//       const result = await launchImageLibrary({
+//         mediaType: 'photo',
+//         includeBase64: true,
+//       });
+//       if (!result.didCancel) {
+//         setBase64Image(result.assets[0].base64); // Update base64Image state with selected image
+//         handleImageUpload(); // Optionally handle image upload
 //       }
-//     });
+//     } catch (error) {
+//       console.error('Image picker error:', error);
+//     }
 //   };
 
 //   const handleSave = async () => {
+//     const userInfoString = await AsyncStorage.getItem('userInfo');
+//     const userInfo = JSON.parse(userInfoString);
+
 //     try {
-//       const formData = new FormData();
-//       formData.append('eventID', '1007');
-//       formData.append('addInfo[skillup_id]', userData.skillup_id);
-      
-//       if (newProfilePicture) {
-//         formData.append('addInfo[profile_picture]', {
-//           uri: newProfilePicture.uri,
-//           type: 'image/jpeg',
-//           name: 'profile_picture.jpg',
-//         });
-//       }
-      
-//       formData.append('addInfo[first_name]', userData.first_name);
-//       formData.append('addInfo[last_name]', userData.last_name);
-//       formData.append('addInfo[date_of_birth]', userData.date_of_birth);
-//       formData.append('addInfo[bio]', userData.bio);
-//       formData.append('addInfo[email]', userData.email);
-//       formData.append('addInfo[phone_number]', userData.phone_number);
-//       formData.append('addInfo[gender]', userData.gender);
-  
-//       const response = await fetch('http://192.168.33.157:5164/skillup_UserProfile', {
-//         method: 'POST',
-//         body: formData,
-//       });
-  
-//       const jsonResponse = await response.json();
-  
-//       if (jsonResponse.rStatus === 0) {
+//       const params = {
+//         eventID: '1007',
+//         addInfo: {
+//           skillup_id: userInfo.rData.id,
+//           profile_picture: base64Image, // Ensure base64Image is included in params
+//           first_name: userData.first_name,
+//           last_name: userData.last_name,
+//           date_of_birth: userData.date_of_birth,
+//           bio: userData.bio,
+//           email: userData.email,
+//           phone_number: userData.phone_number,
+//           gender: userData.gender,
+//         },
+//       };
+
+//       const response = await fetch(
+//         'http://192.168.33.157:5164/skillup_UserProfile',
+//         {
+//           method: 'POST',
+//           headers: {
+//             'Content-Type': 'application/json',
+//           },
+//           body: JSON.stringify(params),
+//         }
+//       );
+
+//       if (response.ok) {
+//         const resData = await response.json();
+//         console.log('Update data:', resData);
 //         Alert.alert('Success', 'Profile updated successfully');
 //         setIsEditing(false);
+//         fetchUserProfile(); // Refresh profile data after update
 //       } else {
 //         Alert.alert('Error', 'Failed to update profile');
 //       }
@@ -167,69 +174,61 @@
 //     );
 //   }
 
-//   // if (!userData) {
-//   //   return (
-//   //     <View style={styles.container}>
-//   //       <Text>No data available</Text>
-//   //     </View>
-//   //   );
-//   // }
-
 //   return (
 //     <ScrollView contentContainerStyle={styles.scrollContainer}>
 //       <View style={styles.profileCard}>
-//         {userData.profile_picture ? (
+//         {base64Image ? (
 //           <Image
-//             source={{ uri: `data:image/jpeg;base64,${userData.profile_picture}` }}
 //             style={styles.image}
+//             source={{ uri: `data:image/jpeg;base64,${base64Image}` }}
 //           />
 //         ) : (
 //           <Text>No profile picture</Text>
 //         )}
 //         {isEditing ? (
 //           <>
-//             {/* <Button title="Choose New Image" onPress={handleChooseImage} /> */}
+//             <Button title="Choose New Image" onPress={handleChooseImage} />
 //             <TextInput
 //               style={styles.input}
-//               value={userData.first_name}
+//               value={userData.first_name || ''}
 //               onChangeText={(text) => setUserData({ ...userData, first_name: text })}
 //               placeholder="First Name"
 //             />
 //             <TextInput
 //               style={styles.input}
-//               value={userData.last_name}
+//               value={userData.last_name || ''}
 //               onChangeText={(text) => setUserData({ ...userData, last_name: text })}
 //               placeholder="Last Name"
 //             />
 //             <TextInput
 //               style={styles.input}
-//               value={userData.email}
+//               value={userData.email || ''}
 //               onChangeText={(text) => setUserData({ ...userData, email: text })}
 //               placeholder="Email"
 //               keyboardType="email-address"
 //             />
 //             <TextInput
 //               style={styles.input}
-//               value={userData.phone_number}
+//               value={userData.phone_number || ''}
 //               onChangeText={(text) => setUserData({ ...userData, phone_number: text })}
 //               placeholder="Phone Number"
 //               keyboardType="phone-pad"
 //             />
 //             <TextInput
 //               style={styles.input}
-//               value={userData.date_of_birth}
+//               value={userData.date_of_birth || ''}
 //               onChangeText={(text) => setUserData({ ...userData, date_of_birth: text })}
 //               placeholder="Date of Birth"
 //             />
 //             <TextInput
 //               style={styles.input}
-//               value={userData.gender}
+//               value={userData.gender || ''}
 //               onChangeText={(text) => setUserData({ ...userData, gender: text })}
 //               placeholder="Gender"
 //             />
 //             <TextInput
 //               style={styles.input}
-//               value={userData.bio}
+//               value={userData.bio || ''}
 //               onChangeText={(text) => setUserData({ ...userData, bio: text })}
 //               placeholder="Bio"
 //             />
@@ -280,205 +279,33 @@
 //     elevation: 5,
 //   },
 //   image: {
-//     width: 120,
-//     height: 120,
-//     borderRadius: 60,
-//     alignSelf: 'center',
+//     width: 100,
+//     height: 100,
+//     borderRadius: 50,
 //     marginBottom: 20,
+//     alignSelf: 'center',
 //   },
 //   title: {
-//     fontSize: 24,
+//     fontSize: 20,
 //     fontWeight: 'bold',
 //     textAlign: 'center',
-//     marginBottom: 10,
+//     marginBottom: 20,
 //   },
 //   label: {
-//     fontSize: 18,
-//     fontWeight: 'bold',
-//     marginTop: 10,
+//     fontSize: 16,
+//     marginBottom: 10,
 //   },
 //   input: {
-//     height: 40,
-//     borderColor: '#ccc',
 //     borderWidth: 1,
-//     marginBottom: 10,
-//     padding: 10,
+//     borderColor: '#ccc',
 //     borderRadius: 5,
+//     padding: 10,
+//     marginBottom: 10,
+//     fontSize: 16,
+//     width: '100%',
 //   },
 //   editButton: {
-//     marginTop: 10,
-//   },
-// });
-
-// export default Profile;
-
-
-// import React, { useState, useEffect, useContext } from 'react';
-// import { View, Text, Image, StyleSheet, Button, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
-// import BackButton from './BackButton';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-
-// import { AuthContext } from '../services/AuthContext';
-
-// const Profile = ({ navigation }) => {
-//   const{logout} = useContext(AuthContext);
-//   const [userData, setUserData] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     fetchUserProfile();
-//   }, []);
-
-//   const fetchUserProfile = async () => {
-//     const userInfoString = await AsyncStorage.getItem('userInfo');
-//     const userInfo = JSON.parse(userInfoString);
-//     try {
-//       const response = await fetch('http://192.168.33.157:5164/skillup_UserProfile', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//           eventID: "1006",
-//           addInfo: {
-//             skillup_id: userInfo.rData.id
-//           },
-//         }),
-//       });
-//       const jsonResponse = await response.json();
-      
-//       if (jsonResponse.rStatus === 0 && jsonResponse.rData && jsonResponse.rData.profile) {
-//         const userArray = jsonResponse.rData.profile[0];
-        
-//         if (userArray && userArray.length > 0) {
-//           const user = {
-//             profile_picture: userArray[0],
-//             first_name: userArray[1],
-//             last_name: userArray[2],
-//             date_of_birth: userArray[3],
-//             bio: userArray[4],
-//             email: userArray[5],
-//             phone_number: userArray[6],
-//             name: userArray[7],
-//             gender: userArray[8],
-//           };
-          
-//           setUserData(user);
-//         } else {
-//           console.error('No user data found in profile array');
-//         }
-//       } else {
-//         console.error('Invalid response structure or rStatus is not 0');
-//       }
-//       setLoading(false);
-//     } catch (error) {
-//       console.error('Error fetching user profile:', error);
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleLogout = () => {
-//     Alert.alert(
-//       'Logout',
-//       'Are you sure you want to logout?',
-//       [
-//         {
-//           text: 'Cancel',
-//           style: 'cancel',
-//         },
-//         {
-//           text: 'OK',
-//           onPress: async () => {
-//             await logout(); // Call logout function from AuthContext
-//             navigation.reset({
-//               index: 0,
-//               routes: [{ name: 'SignIn' }],
-//             });
-//           },
-//           style: 'destructive', // Change button style to indicate danger
-//         },
-//       ],
-//       { cancelable: false }
-//     );
-//   };
-
-//   if (loading) {
-//     return (
-//       <View style={styles.container}>
-//         <ActivityIndicator size="large" color="#0000ff" />
-//       </View>
-//     );
-//   }
-
-//   if (!userData) {
-//     return (
-//       <View style={styles.container}>
-//         <Text>No data available</Text>
-//       </View>
-//     );
-//   }
-
-//   return (
-//     <View style={styles.container}>
-//       <BackButton navigation={navigation} />
-//       <View style={styles.profileCard}>
-//         {userData.profile_picture && (
-//           <Image
-//             source={{ uri: `data:image/jpeg;base64,${userData.profile_picture}` }}
-//             style={styles.image}
-//           />
-//         )}
-//         <Text style={styles.title}>Profile Details</Text>
-//         <Text style={styles.label}>Name: {userData.name}</Text>
-//         <Text style={styles.label}>Email: {userData.email}</Text>
-//         <Text style={styles.label}>Phone Number: {userData.phone_number}</Text>
-//         <Text style={styles.label}>Date of Birth: {userData.date_of_birth}</Text>
-//         <Text style={styles.label}>Gender: {userData.gender}</Text>
-//         <Text style={styles.label}>Bio: {userData.bio}</Text>
-//       </View>
-//       <Button title="Logout" onPress={handleLogout} color="#f44336" />
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     padding: 20,
-//     backgroundColor: '#f8f8f8',
-//   },
-//   profileCard: {
-//     backgroundColor: '#fff',
-//     padding: 20,
-//     borderRadius: 10,
-//     marginBottom: 20,
-//     width: '100%',
-//     shadowColor: '#000',
-//     shadowOffset: { width: 0, height: 2 },
-//     shadowOpacity: 0.25,
-//     shadowRadius: 3.84,
-//     elevation: 5,
-//   },
-//   image: {
-//     width: 120,
-//     height: 120,
-//     borderRadius: 60,
-//     alignSelf: 'center',
-//     marginBottom: 20,
-//   },
-//   title: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     textAlign: 'center',
 //     marginBottom: 10,
-//   },
-//   label: {
-//     fontSize: 18,
-//     fontWeight: 'bold',
-//     marginTop: 10,
 //   },
 // });
 
@@ -487,26 +314,28 @@
 
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, Image, StyleSheet, Button, Alert, ActivityIndicator, TextInput, ScrollView } from 'react-native';
-import BackButton from './BackButton';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { launchImageLibrary } from 'react-native-image-picker';
 import { AuthContext } from '../services/AuthContext';
 
 const Profile = ({ navigation }) => {
-  const { logout } = useContext(AuthContext);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [newProfilePicture, setNewProfilePicture] = useState(null);
+  const [base64Image, setBase64Image] = useState('');
+
+  const { logout } = useContext(AuthContext);
 
   useEffect(() => {
     fetchUserProfile();
   }, []);
 
   const fetchUserProfile = async () => {
-    const userInfoString = await AsyncStorage.getItem('userInfo');
-    const userInfo = JSON.parse(userInfoString);
     try {
+      const userInfoString = await AsyncStorage.getItem('userInfo');
+      const userInfo = JSON.parse(userInfoString);
+
       const response = await fetch('http://192.168.33.157:5164/skillup_UserProfile', {
         method: 'POST',
         headers: {
@@ -519,6 +348,11 @@ const Profile = ({ navigation }) => {
           },
         }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
       const jsonResponse = await response.json();
 
       if (jsonResponse.rStatus === 0 && jsonResponse.rData && jsonResponse.rData.profile) {
@@ -535,16 +369,20 @@ const Profile = ({ navigation }) => {
             phone_number: userArray[6],
             name: userArray[7],
             gender: userArray[8],
+            skillup_id: userInfo.rData.id,
           };
 
           setUserData(user);
+          setLoading(false);
+          setBase64Image(userArray[0]);
         } else {
           console.error('No user data found in profile array');
+          setLoading(false);
         }
       } else {
         console.error('Invalid response structure or rStatus is not 0');
+        setLoading(false);
       }
-      setLoading(false);
     } catch (error) {
       console.error('Error fetching user profile:', error);
       setLoading(false);
@@ -563,13 +401,13 @@ const Profile = ({ navigation }) => {
         {
           text: 'OK',
           onPress: async () => {
-            await logout(); // Call logout function from AuthContext
+            await logout();
             navigation.reset({
               index: 0,
               routes: [{ name: 'SignIn' }],
             });
           },
-          style: 'destructive', // Change button style to indicate danger
+          style: 'destructive',
         },
       ],
       { cancelable: false }
@@ -580,37 +418,59 @@ const Profile = ({ navigation }) => {
     setIsEditing(true);
   };
 
+  const handleChooseImage = async () => {
+    try {
+      const result = await launchImageLibrary({
+        mediaType: 'photo',
+        includeBase64: true,
+      });
+
+      if (result.assets && result.assets.length > 0) {
+        const source = { uri: result.assets[0].uri };
+        setNewProfilePicture(source);
+        setBase64Image(result.assets[0].base64);
+      }
+    } catch (error) {
+      console.error('Error choosing image:', error);
+    }
+  };
+
   const handleSave = async () => {
     try {
+      const userInfoString = await AsyncStorage.getItem('userInfo');
+      const userInfo = JSON.parse(userInfoString);
+
+      const params = {
+        eventID: '1007',
+        addInfo: {
+          skillup_id: userInfo.rData.id,
+          profile_picture: base64Image,
+          first_name: userData.first_name,
+          last_name: userData.last_name,
+          date_of_birth: userData.date_of_birth,
+          bio: userData.bio,
+          email: userData.email,
+          phone_number: userData.phone_number,
+          gender: userData.gender,
+        },
+      };
+
       const response = await fetch('http://192.168.33.157:5164/skillup_UserProfile', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          eventID: "1003",
-          rData: {
-            skillup_id: userData.id,
-            profile: [
-              userData.profile_picture,
-              userData.first_name,
-              userData.last_name,
-              userData.date_of_birth,
-              userData.bio,
-              userData.email,
-              userData.phone_number,
-              userData.name,
-              userData.gender,
-            ],
-          },
-        }),
+        body: JSON.stringify(params),
       });
-      const jsonResponse = await response.json();
 
-      if (jsonResponse.rStatus === 0) {
+      if (response.ok) {
+        const resData = await response.json();
+        console.log('Update successful:', resData);
         Alert.alert('Success', 'Profile updated successfully');
         setIsEditing(false);
+        fetchUserProfile(); // Refresh user profile
       } else {
+        console.error('Failed to update profile:', response.status);
         Alert.alert('Error', 'Failed to update profile');
       }
     } catch (error) {
@@ -627,34 +487,31 @@ const Profile = ({ navigation }) => {
     );
   }
 
-  if (!userData) {
-    return (
-      <View style={styles.container}>
-        <Text>No data available</Text>
-      </View>
-    );
-  }
-
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.header}>
-        <BackButton navigation={navigation} />
-        <Text style={styles.title}>My Profile</Text>
-      </View>
       <View style={styles.profileCard}>
-        {userData.profile_picture && (
+        {base64Image ? (
           <Image
-            source={{ uri: `data:image/jpeg;base64,${userData.profile_picture}` }}
             style={styles.image}
+            source={{ uri: `data:image/jpeg;base64,${base64Image}` }}
           />
+        ) : (
+          <Text>No profile picture</Text>
         )}
         {isEditing ? (
           <>
+            <Button title="Choose New Image" onPress={handleChooseImage} />
             <TextInput
               style={styles.input}
-              value={userData.name}
-              onChangeText={(text) => setUserData({ ...userData, name: text })}
-              placeholder="Name"
+              value={userData.first_name}
+              onChangeText={(text) => setUserData({ ...userData, first_name: text })}
+              placeholder="First Name"
+            />
+            <TextInput
+              style={styles.input}
+              value={userData.last_name}
+              onChangeText={(text) => setUserData({ ...userData, last_name: text })}
+              placeholder="Last Name"
             />
             <TextInput
               style={styles.input}
@@ -699,7 +556,7 @@ const Profile = ({ navigation }) => {
             <Text style={styles.label}>Date of Birth: {userData.date_of_birth}</Text>
             <Text style={styles.label}>Gender: {userData.gender}</Text>
             <Text style={styles.label}>Bio: {userData.bio}</Text>
-            <Button title="Edit" onPress={handleEdit} color="#FFA500" />
+            <Button title="Edit" onPress={handleEdit} color="#FFA500" style={styles.editButton} />
           </>
         )}
       </View>
@@ -711,14 +568,14 @@ const Profile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
     backgroundColor: '#f8f8f8',
   },
   scrollContainer: {
     flexGrow: 1,
-    // justifyContent: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
@@ -735,35 +592,33 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   image: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
     alignSelf: 'center',
-    marginBottom: 20,
-  },header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginLeft: 10,
     textAlign: 'center',
-    flex: 1,
+    marginBottom: 20,
   },
   label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 10,
+    fontSize: 16,
+    marginBottom: 10,
   },
   input: {
-    height: 40,
-    borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 10,
-    padding: 10,
+    borderColor: '#ccc',
     borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    fontSize: 16,
+    width: '100%',
+  },
+  editButton: {
+    marginBottom: 10,
   },
 });
 
