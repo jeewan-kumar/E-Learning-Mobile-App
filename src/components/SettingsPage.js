@@ -13,7 +13,7 @@ const SettingsPage = ({ navigation }) => {
     try {
       const updatedState = !notificationsEnabled;
       setNotificationsEnabled(updatedState); // Optimistically update UI
-      // Example: Make API call to update user preferences on the server
+      
       const response = await axios.post('http://example.com/api/updatePreferences', { notificationsEnabled: updatedState });
       if (response.data.success) {
         // Optionally handle success message or UI update
@@ -102,9 +102,9 @@ const SettingsPage = ({ navigation }) => {
         />
       </View>
 
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+      {/* <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

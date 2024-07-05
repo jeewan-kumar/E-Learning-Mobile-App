@@ -155,6 +155,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { AuthContext } from '../services/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const slides = [
   {

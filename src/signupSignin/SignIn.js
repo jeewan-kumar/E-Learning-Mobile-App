@@ -56,7 +56,7 @@ const SignIn = () => {
           return;
         }
 
-        const signInResponse = await signIn(phone_number, password, false); // Pass false for phone number login
+        const signInResponse = await signIn(phone_number, password, false); 
         if (signInResponse.success) {
           navigation.navigate('Home');
         } else {

@@ -20,7 +20,7 @@ const SplashScreen = ({ navigation }) => {
           }, 10);
         }
       } catch (e) {
-        console.error('Failed to load auth status', e);
+        // console.error('Failed to load auth status', e);
         navigation.navigate('SignIn');
       }
     };

@@ -44,8 +44,10 @@ const SignUp = ({ navigation }) => {
 
         if (email && phone && password) {
             const signUpResponse = await signUp(email, phone, password);
-            if (signUpResponse.success) {
-                navigation.navigate('SignIn');
+            console.log(signUpResponse ,'signUpResponse')
+            if (signUpResponse.success) {                
+                navigation.navigate('SignUpForm',{signUpResponse} );
+                
             } else if (signUpResponse.message === 'Duplicate Credentials') {
                 Alert.alert('Error', 'Email or phone number already registered');
             } else {

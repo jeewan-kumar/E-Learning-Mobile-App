@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
             await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
             setIsLoading(false);
             console.log(userInfo.rData.id);
-            return { success: true };
+            return { success: true , user:userInfo.rData.id };
         } catch (error) {
             console.error(`Sign up failed: ${error}`);
             setIsLoading(false);

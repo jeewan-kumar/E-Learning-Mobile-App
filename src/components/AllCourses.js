@@ -9,6 +9,8 @@ import { AuthContext } from '../services/AuthContext';
 const courseUrl = "http://192.168.33.157:5164/skillup_Course";
 const enrollUrl = "http://192.168.33.157:5164/skillup_Course";
 
+
+
 const AllCourses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);

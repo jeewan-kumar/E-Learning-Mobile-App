@@ -27,7 +27,7 @@ import LearningPlanPage from './src/components/LearningPlanPage';
 import CertificatesPage from './src/components/CertificatesPage';
 import CourseDetails from './src/components/CourseDetails';
 import CourseList from './src/components/CourseList';
-// import ProfileUpdateForm from './src/components/ProfileUpdateForm';
+import SignUpForm from './src/components/SignUpForm';
 import AllCourses from './src/components/AllCourses';
 import VideoPlayer from './src/components/VideoPlayer';
 
@@ -47,10 +47,12 @@ export default function App() {
     const checkAuthState = async () => {
       try {
         const user = await AsyncStorage.getItem('user');
+        const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
         if (user) {
           setShowHomePage(true);
+          setShowOnboarding(false);
         } else {
-          const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+          
           setShowOnboarding(!hasSeenOnboarding);
         }
       } catch (e) {
@@ -116,7 +118,7 @@ export default function App() {
               <Stack.Screen name="About" component={AboutSkillUpCodingPage} />
               <Stack.Screen name="LearningPlan" component={LearningPlanPage} />
               <Stack.Screen name="MyCertificates" component={CertificatesPage} />
-              {/* <Stack.Screen name="ProfileUpdateForm" component={ProfileUpdateForm} /> */}
+              <Stack.Screen name="SignUpForm" component={SignUpForm} />
               <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
 
 
@@ -145,12 +147,12 @@ function MainTabNavigator() {
           return<Ionicons name="search-outline" size={25}/>
         }
       }}/>
-      <Tab.Screen name="EnrolledCourses" component={EnrolledCoursesScreen} options={{ headerTitleAlign:"center",
+      <Tab.Screen name="Enrolled" component={EnrolledCoursesScreen} options={{ headerTitleAlign:"center",
         tabBarIcon:()=>{
           return<Ionicons name="laptop-outline" size={25}/>
         }
       }}/>
-      <Tab.Screen name="ProfileScreen" component={ProfileScreen} options={{headerTitleAlign:"center",
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{headerTitleAlign:"center",
         tabBarIcon:()=>{
           return<Ionicons name="person-outline" size={25}/>
         }
