@@ -79,13 +79,13 @@ const ProfileScreen = () => {
     );
   }
 
-  // if (!userData) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text>No data available</Text>
-  //     </View>
-  //   );
-  // }
+  if (!userData) {
+    return (
+      <View style={styles.container}>
+        <Text>No data available</Text>
+      </View>
+    );
+  }
 
   const handleLogout = () => {
     Alert.alert(

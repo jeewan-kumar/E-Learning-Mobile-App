@@ -30,7 +30,7 @@ import CourseList from './src/components/CourseList';
 import SignUpForm from './src/components/SignUpForm';
 import AllCourses from './src/components/AllCourses';
 import VideoPlayer from './src/components/VideoPlayer';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import WebViewScreen from './src/components/WebViewScreen';
 
 const Stack = createStackNavigator();
@@ -147,12 +147,12 @@ function MainTabNavigator() {
           return<Ionicons name="search-outline" size={25}/>
         }
       }}/>
-      <Tab.Screen name="Enrolled" component={EnrolledCoursesScreen} options={{ headerTitleAlign:"center",
+      <Tab.Screen name="EnrolledCourses" component={EnrolledCoursesScreen} options={{ headerTitleAlign:"center",
         tabBarIcon:()=>{
           return<Ionicons name="laptop-outline" size={25}/>
         }
       }}/>
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{headerTitleAlign:"center",
+      <Tab.Screen name="ProfileScreen" component={ProfileScreen} options={{headerTitleAlign:"center",
         tabBarIcon:()=>{
           return<Ionicons name="person-outline" size={25}/>
         }
